@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace LiveMedianEstimate
@@ -58,9 +54,10 @@ namespace LiveMedianEstimate
                     }
                 }
             }
-            sortedSampleArray = (int[])sampleArray.Clone();
-            QuickSort(sortedSampleArray, 0, k-1);
-            return sortedSampleArray[(k - 1) / 2];
+            
+                sortedSampleArray = (int[]) sampleArray.Clone();
+                QuickSort(sortedSampleArray, 0, k - 1);
+                return sortedSampleArray[(k - 1)/2];
         }
         // TODO: Consider receiving data stream as byte-array
 
