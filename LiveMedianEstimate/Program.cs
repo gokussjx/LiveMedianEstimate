@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace LiveMedianEstimate
 {
@@ -8,30 +10,36 @@ namespace LiveMedianEstimate
         static void Main(string[] args)
         {
             Program program = new Program();
+            ProgramTester programTester = new ProgramTester();
 
             try
             {
                 StreamReader stream = new StreamReader(@"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFile.txt");
 
-                int median = program.estimateMedian(stream, 4);
+                float median = program.estimateMedian(stream, 5);
                 Console.WriteLine(median);
             }
             catch(FileNotFoundException e)
             {
                 Console.WriteLine(e.StackTrace);
-                Console.WriteLine(" ");
+                Console.WriteLine("Sorry, File not found!");
             }
+
+            programTester.MedianTestMethod();
         }
 
-        // Continuous File stream read
-        private int estimateMedian(StreamReader stream, int k)
+        // PRIMARY MODULE : estimateMedian
+        // For the purpose of testing, the method has been declared with 'public' access
+        // Case needs to be k <= n, for unbiased results
+        public float estimateMedian(StreamReader stream, int k)
         {
             int count = 0;
             string line;
+            bool kIsEven = k % 2 == 0;  // Check whether k is Even or Odd
 
             // Initialize sample array of size k
-            int[] sampleArray = new int[k];
-            int[] sortedSampleArray = new int[k];
+            float[] sampleArray = new float[k];
+            float[] sortedSampleArray = new float[k];
 
             // Read the file stream one line at a time
             while((line = stream.ReadLine()) != null)
@@ -39,7 +47,7 @@ namespace LiveMedianEstimate
                 count++;
                 if(count <= k)
                 {
-                    sampleArray[count - 1] = Convert.ToInt32(line);
+                    sampleArray[count - 1] = float.Parse(line);
                 }
                 
                 else if(count > k)
@@ -50,19 +58,18 @@ namespace LiveMedianEstimate
 
                     if(randomIndex < k)
                     {
-                        sampleArray[randomIndex] = Convert.ToInt32(line);
-                    }
+                        sampleArray[randomIndex] = float.Parse(line);
+                    }   
                 }
             }
-            
-                sortedSampleArray = (int[]) sampleArray.Clone();
-                QuickSort(sortedSampleArray, 0, k - 1);
-                return sortedSampleArray[(k - 1)/2];
+
+            sortedSampleArray = (float[]) sampleArray.Clone();
+            QuickSort(sortedSampleArray, 0, k - 1);
+            return kIsEven ? (sortedSampleArray[(k/2)-1] + sortedSampleArray[(k/2)])/2.0f : sortedSampleArray[(k-1)/2];
         }
-        // TODO: Consider receiving data stream as byte-array
 
 // QuickSort code starts here
-        private void QuickSort(int[] inputArray, int low, int high)
+        private void QuickSort(float[] inputArray, int low, int high)
         {
             int pivotPosition = 0;
 
@@ -83,9 +90,9 @@ namespace LiveMedianEstimate
         }
 
         // QuickSort : Partition module
-        private int Partition(int[] inputArray, int low, int high)
+        private int Partition(float[] inputArray, int low, int high)
         {
-            int pivot = inputArray[high];
+            float pivot = inputArray[high];
             int i = low - 1;
 
             for(int j = low; j < high; j++)
@@ -100,12 +107,116 @@ namespace LiveMedianEstimate
         }
 
         // QuickSort : Swap module
-        private static void Swap(int[] inputArray, int elementA, int elementB)
+        private static void Swap(float[] inputArray, int elementA, int elementB)
         {
-            int temp = inputArray[elementA];
+            float temp = inputArray[elementA];
             inputArray[elementA] = inputArray[elementB];
             inputArray[elementB] = temp;
         }
 // QuickSort code ends here
+    }
+
+
+// Test Program
+    public class ProgramTester
+    {
+        public void MedianTestMethod()
+        {
+            Console.WriteLine(" ");
+            Console.WriteLine(" ");
+
+            Program program = new Program();
+            string line;
+            var listOfInboundStream = new List<float>();
+
+            string path = @"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFile.txt";
+            string pathAsc = @"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFileAsc.txt";
+            string pathDesc = @"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFileDesc.txt";
+
+            try
+            {
+                StreamReader stream = new StreamReader(path);
+
+                // Store the stream in a List
+                while ((line = stream.ReadLine()) != null)
+                {
+                    listOfInboundStream.Add(float.Parse(line));
+                }
+
+                //if (!File.Exists(pathAsc) || !File.Exists(pathDesc))
+                //{
+                //    using (FileStream fs = File.Create(pathAsc))
+                //    {
+                //        for (byte i = 0; i < 100; i++)
+                //        {
+                //            fs.WriteByte(i);
+                //        }
+                //    }
+
+                //    using (FileStream fs = File.Create(pathDesc))
+                //    {
+                //        for (byte i = 0; i < 100; i++)
+                //        {
+                //            fs.WriteByte(i);
+                //        }
+                //    }
+                //}
+
+                if (!File.Exists(pathAsc) || (!File.Exists(pathDesc)))
+                {
+                    File.Create(pathAsc).Close();
+                    File.Create(pathDesc).Close();
+                }
+
+                StreamWriter writerAsc = new StreamWriter(pathAsc);
+                StreamWriter writerDesc = new StreamWriter(pathDesc);
+
+                // Sort List in Ascending order and write to new file stream
+                listOfInboundStream.Sort();
+                foreach (var variable in listOfInboundStream)
+                {
+                    writerAsc.WriteLine(variable);
+                }
+                writerAsc.Close();
+
+                // Sort List in Descending order and write to new file stream
+                listOfInboundStream.Reverse();
+                foreach (var variable in listOfInboundStream)
+                {
+                    writerDesc.WriteLine(variable);
+                }
+                writerDesc.Close();
+
+                stream = new StreamReader(path);
+                StreamReader streamAsc = new StreamReader(pathAsc);
+                StreamReader streamDesc = new StreamReader(pathDesc);
+
+                //float[] streamArray = listOfInboundStream.ToArray();
+
+                float median = program.estimateMedian(stream, 5);
+                float medianAsc = program.estimateMedian(streamAsc, 5);
+                float medianDesc = program.estimateMedian(streamDesc, 5);
+                Console.WriteLine("TEST Original: " + median);
+                Console.WriteLine("TEST Ascending: " + medianAsc);
+                Console.WriteLine("TEST Descending: " + medianDesc);
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine("Sorry, File not found!");
+            }
+        }
+
+        public static void Shuffle<T>(Random rng, T[] array)
+        {
+            int n = array.Length;
+            while (n > 1)
+            {
+                int k = rng.Next(n--);
+                T temp = array[n];
+                array[n] = array[k];
+                array[k] = temp;
+            }
+        }
     }
 }
