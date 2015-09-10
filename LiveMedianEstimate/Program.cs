@@ -1,23 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace LiveMedianEstimate
 {
     class Program
     {
-        private float[] array = {};
+        public float[] array = {};
+        public static int K;
 
         static void Main(string[] args)
         {
             Program program = new Program();
             ProgramTester programTester = new ProgramTester();
 
+            // To ease testing, user input of K required
+            Console.Write("Enter value of sample size: ");
+            K = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine();
+
             // Execution module to read stream, estimate median and report in console
             try
             {
                 StreamReader stream = new StreamReader(Path.Combine(Environment.CurrentDirectory, "TestFile.txt"));
-                float median = program.estimateMedian(stream, 5);
+                float median = program.estimateMedian(stream, K);
                 Console.WriteLine("Estimated Median: " + median);
             }
             catch(FileNotFoundException e)
@@ -27,15 +35,16 @@ namespace LiveMedianEstimate
             }
 
             // Call the Test method
-            programTester.MedianTestMethod();
+            programTester.MedianTestMethod();   // COMMENT THIS MODULE IF YOU NEED TO RUN PROGRAM WITHOUT TEST REPORT
         }
 
         // PRIMARY MODULE : estimateMedian
         // For the purpose of testing, the method has been declared with 'public' access
-        // Case needs to be k <= n, for unbiased results
+        // Case needs to be k <= n, for unbiased results and test report
         public float estimateMedian(StreamReader stream, int k)
         {
             int count = 0;
+            //elementCounter = new int[k];
             string line;
             bool kIsEven = k % 2 == 0;  // Check whether k is Even or Odd
 
@@ -76,10 +85,7 @@ namespace LiveMedianEstimate
             return kIsEven ? (sortedSampleArray[(k/2)-1] + sortedSampleArray[(k/2)])/2.0f : sortedSampleArray[(k-1)/2];
         }
 
-        public float[] getSampleArray()
-        {
-            return array;
-        }
+        
 
 // QuickSort code starts here
         private void QuickSort(float[] inputArray, int low, int high)
@@ -130,16 +136,22 @@ namespace LiveMedianEstimate
     }
 
 //***********************************************************************************************************************************
+// THE TEST REPORT IS ONLY ACCURATE IF THE INPUT DATA IS SET OF SEQUENTIAL NUMBERS STARTING FROM 1
+// REGARDLESS, THE PRIMARY MEDIAN MODULE ABOVE WOULD STILL GENERATE PROPER MEDIAN ESTIMATES
 //***********************************************************************************************************************************
 // Test Program
     public class ProgramTester
     {
+        Program program = new Program();
+        private static int count = 0;
+        private List<float> streamList;
+        public int[] elementCounter = {};
+
         public void MedianTestMethod()
         {
             Console.WriteLine("");
             Console.WriteLine("********************************** TEST **********************************");
-            Console.WriteLine("k/n = 5/8 = " + 5.0f/8.0f);
-            Program program = new Program();
+
             string line;
             var listOfInboundStream = new List<float>();
 
@@ -158,6 +170,10 @@ namespace LiveMedianEstimate
                 {
                     listOfInboundStream.Add(float.Parse(line));
                 }
+
+                streamList = listOfInboundStream;
+                count = listOfInboundStream.Count;
+                elementCounter = new int[count];
 
                 // Create new files to store ascending, descending and randomized data sets, if they don't already exist
                 if ((!File.Exists(pathAsc)) || (!File.Exists(pathDesc)) || (!File.Exists(pathRand)))
@@ -213,22 +229,29 @@ namespace LiveMedianEstimate
 
                     Console.WriteLine("");
 
-                    // Estimate median in all test cases and report in console
-                    float median = program.estimateMedian(stream, 5);
-                    Console.WriteLine("TEST Original: " + median);
-                    DisplayArray(program.getSampleArray());
+                    // Estimate median in input test case and report in console
+                    float median = program.estimateMedian(stream, Program.K);
+                    Console.Write("TEST Original: " + median + "\t");
+                    DisplayArray(GetSampleArray());
+                    UpdateElementCounter();
 
-                    float medianAsc = program.estimateMedian(streamAsc, 5);
-                    Console.WriteLine("TEST Ascending: " + medianAsc);
-                    DisplayArray(program.getSampleArray());
+                    // Estimate median when same data is sorted in ASC, and report in console
+                    float medianAsc = program.estimateMedian(streamAsc, Program.K);
+                    Console.Write("TEST Ascending: " + medianAsc + "\t");
+                    DisplayArray(GetSampleArray());
+                    UpdateElementCounter();
 
-                    float medianDesc = program.estimateMedian(streamDesc, 5);
-                    Console.WriteLine("TEST Descending: " + medianDesc);
-                    DisplayArray(program.getSampleArray());
+                    // Estimate median when same data is sorted in DESC, and report in console
+                    float medianDesc = program.estimateMedian(streamDesc, Program.K);
+                    Console.Write("TEST Descending: " + medianDesc + "\t");
+                    DisplayArray(GetSampleArray());
+                    UpdateElementCounter();
 
-                    float medianRand = program.estimateMedian(streamRand, 5);
-                    Console.WriteLine("TEST Random: " + medianRand);
-                    DisplayArray(program.getSampleArray());
+                    // Estimate median when same data is randomly shuffled, and report in console
+                    float medianRand = program.estimateMedian(streamRand, Program.K);
+                    Console.Write("TEST Random:    " + medianRand + "\t");
+                    DisplayArray(GetSampleArray());
+                    UpdateElementCounter();
                 }
             }
             catch (FileNotFoundException e)
@@ -236,6 +259,49 @@ namespace LiveMedianEstimate
                 Console.WriteLine(e.StackTrace);
                 Console.WriteLine("Sorry, File not found!");
             }
+
+            Console.WriteLine("");
+            Console.WriteLine("*************************** TEST REPORT ***************************");
+            Console.WriteLine("k/n = " + Program.K + "/" + count + " = " + (float)Program.K / (float)count);
+            Console.WriteLine("");
+            //DisplayArray(GetElementCounter());
+            streamList.Sort();
+            for(int i=0; i<streamList.Count; i++)
+            {
+                Console.Write("Probability of ");
+                Console.WriteLine(streamList[i] + " = " + GetElementCounter(i) + "/" + 20 + " = " + (float)GetElementCounter(i)/20.0f);
+            }
+            Console.WriteLine("");
+        }
+
+        // Fetch global instance of sample array
+        public float[] GetSampleArray()
+        {
+            return program.array;
+        }
+
+        // Update array of element occurrence count
+        public void UpdateElementCounter()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (program.array.Contains(i + 1))
+                {
+                    ++elementCounter[i];
+                }
+            }
+        }
+
+        // Fetch an array of element occurrence count
+        public int[] GetElementCounter()
+        {
+            return elementCounter;
+        }
+
+        // Fetch the 'i'th element in occurrence array
+        public int GetElementCounter(int i)
+        {
+            return elementCounter[i];
         }
 
         // Array Shuffler
@@ -251,7 +317,8 @@ namespace LiveMedianEstimate
             }
         }
 
-        public void DisplayArray(float[] array)
+        // Method to display any passed array
+        public void DisplayArray<T>(T[] array)
         {
             Console.Write("[ ");
             foreach (var i in array)
