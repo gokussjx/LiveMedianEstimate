@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace LiveMedianEstimate
 {
@@ -35,7 +34,7 @@ namespace LiveMedianEstimate
             }
 
             // Call the Test method
-            programTester.MedianTestMethod();   // COMMENT THIS MODULE IF YOU NEED TO RUN PROGRAM WITHOUT TEST REPORT
+            programTester.MedianTestMethod();   // COMMENT OUT THIS MODULE IF YOU NEED TO RUN PROGRAM WITHOUT TEST REPORT
         }
 
         // PRIMARY MODULE : estimateMedian
@@ -260,11 +259,13 @@ namespace LiveMedianEstimate
                 Console.WriteLine("Sorry, File not found!");
             }
 
+            // Generate a test report
             Console.WriteLine("");
             Console.WriteLine("*************************** TEST REPORT ***************************");
             Console.WriteLine("k/n = " + Program.K + "/" + count + " = " + (float)Program.K / (float)count);
             Console.WriteLine("");
-            //DisplayArray(GetElementCounter());
+            
+            // Calculate and report the probability of occurrence of each element in sampled array
             streamList.Sort();
             for(int i=0; i<streamList.Count; i++)
             {
