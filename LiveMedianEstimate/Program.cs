@@ -265,7 +265,7 @@ namespace LiveMedianEstimate
             Console.WriteLine("k/n = " + Program.K + "/" + count + " = " + (float)Program.K / (float)count);
             Console.WriteLine("");
             
-            // Calculate and report the probability of occurrence of each element in sampled array
+            // Calculate and report the observed probability of occurrence of each element in sampled array
             streamList.Sort();
             for(int i=0; i<streamList.Count; i++)
             {
