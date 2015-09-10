@@ -35,6 +35,8 @@ namespace LiveMedianEstimate
 
             // Call the Test method
             programTester.MedianTestMethod();   // COMMENT OUT THIS MODULE IF YOU NEED TO RUN PROGRAM WITHOUT TEST REPORT
+
+            Console.Read();
         }
 
         // PRIMARY MODULE : estimateMedian
