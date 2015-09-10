@@ -4,8 +4,7 @@ C:\Users\Bidyut\documents\visual studio 2015\Projects\LiveMedianEstimate\LiveMed
 C:\Users\Bidyut\documents\visual studio 2015\Projects\LiveMedianEstimate\LiveMedianEstimate\obj\Debug\LiveMedianEstimate.exe
 C:\Users\Bidyut\documents\visual studio 2015\Projects\LiveMedianEstimate\LiveMedianEstimate\obj\Debug\LiveMedianEstimate.pdb
 C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\bin\Debug\LiveMedianEstimate.exe.config
-C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Debug\LiveMedianEstimate.exe
-C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Debug\LiveMedianEstimate.pdb
 C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\bin\Debug\LiveMedianEstimate.exe
 C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\bin\Debug\LiveMedianEstimate.pdb
-C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Debug\LiveMedianEstimate.csprojResolveAssemblyReference.cache
+C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Debug\LiveMedianEstimate.exe
+C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Debug\LiveMedianEstimate.pdb

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace LiveMedianEstimate
 {
     class Program
     {
+        private float[] array = {};
+
         static void Main(string[] args)
         {
             Program program = new Program();
@@ -15,10 +16,9 @@ namespace LiveMedianEstimate
             // Execution module to read stream, estimate median and report in console
             try
             {
-                StreamReader stream = new StreamReader(@"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFile.txt");
-
+                StreamReader stream = new StreamReader(Path.Combine(Environment.CurrentDirectory, "TestFile.txt"));
                 float median = program.estimateMedian(stream, 5);
-                Console.WriteLine(median);
+                Console.WriteLine("Estimated Median: " + median);
             }
             catch(FileNotFoundException e)
             {
@@ -72,7 +72,13 @@ namespace LiveMedianEstimate
             // Make a copy of final sample array, sort using QuickSort and return estimated median to parent method
             sortedSampleArray = (float[]) sampleArray.Clone();
             QuickSort(sortedSampleArray, 0, k - 1);
+            array = sortedSampleArray;
             return kIsEven ? (sortedSampleArray[(k/2)-1] + sortedSampleArray[(k/2)])/2.0f : sortedSampleArray[(k-1)/2];
+        }
+
+        public float[] getSampleArray()
+        {
+            return array;
         }
 
 // QuickSort code starts here
@@ -130,15 +136,18 @@ namespace LiveMedianEstimate
     {
         public void MedianTestMethod()
         {
+            Console.WriteLine("");
+            Console.WriteLine("********************************** TEST **********************************");
+            Console.WriteLine("k/n = 5/8 = " + 5.0f/8.0f);
             Program program = new Program();
             string line;
             var listOfInboundStream = new List<float>();
 
             // Define file paths to use
-            string path = @"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFile.txt";
-            string pathAsc = @"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFileAsc.txt";
-            string pathDesc = @"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFileDesc.txt";
-            string pathRand = @"C:\Users\Bidyut\Documents\Visual Studio 2015\Projects\LiveMedianEstimate\TestFileRand.txt";
+            string path = Path.Combine(Environment.CurrentDirectory, "TestFile.txt"); ;
+            string pathAsc = Path.Combine(Environment.CurrentDirectory, "TestFileAsc.txt");
+            string pathDesc = Path.Combine(Environment.CurrentDirectory, "TestFileDesc.txt");
+            string pathRand = Path.Combine(Environment.CurrentDirectory, "TestFileRand.txt");
 
             try
             {
@@ -151,7 +160,7 @@ namespace LiveMedianEstimate
                 }
 
                 // Create new files to store ascending, descending and randomized data sets, if they don't already exist
-                if (!File.Exists(pathAsc) || (!File.Exists(pathDesc)) || (!File.Exists(pathRand)))
+                if ((!File.Exists(pathAsc)) || (!File.Exists(pathDesc)) || (!File.Exists(pathRand)))
                 {
                     File.Create(pathAsc).Close();
                     File.Create(pathDesc).Close();
@@ -202,18 +211,24 @@ namespace LiveMedianEstimate
                     listOfInboundStream.CopyTo(streamArray);
                     Shuffle(new Random(), streamArray);
 
-                    Console.WriteLine(" ");
-                    Console.WriteLine(" ");
+                    Console.WriteLine("");
 
                     // Estimate median in all test cases and report in console
                     float median = program.estimateMedian(stream, 5);
-                    float medianAsc = program.estimateMedian(streamAsc, 5);
-                    float medianDesc = program.estimateMedian(streamDesc, 5);
-                    float medianRand = program.estimateMedian(streamRand, 5);
                     Console.WriteLine("TEST Original: " + median);
+                    DisplayArray(program.getSampleArray());
+
+                    float medianAsc = program.estimateMedian(streamAsc, 5);
                     Console.WriteLine("TEST Ascending: " + medianAsc);
+                    DisplayArray(program.getSampleArray());
+
+                    float medianDesc = program.estimateMedian(streamDesc, 5);
                     Console.WriteLine("TEST Descending: " + medianDesc);
+                    DisplayArray(program.getSampleArray());
+
+                    float medianRand = program.estimateMedian(streamRand, 5);
                     Console.WriteLine("TEST Random: " + medianRand);
+                    DisplayArray(program.getSampleArray());
                 }
             }
             catch (FileNotFoundException e)
@@ -234,6 +249,18 @@ namespace LiveMedianEstimate
                 array[n] = array[k];
                 array[k] = temp;
             }
+        }
+
+        public void DisplayArray(float[] array)
+        {
+            Console.Write("[ ");
+            foreach (var i in array)
+            {
+                Console.Write(i + " ");
+            }
+            Console.Write("]");
+            Console.WriteLine("");
+            
         }
     }
 }
