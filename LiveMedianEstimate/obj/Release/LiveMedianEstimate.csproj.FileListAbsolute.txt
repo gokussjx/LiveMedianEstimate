@@ -3,3 +3,4 @@ C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstima
 C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\bin\Release\LiveMedianEstimate.pdb
 C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Release\LiveMedianEstimate.exe
 C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Release\LiveMedianEstimate.pdb
+C:\Users\Bidyut\Documents\GitHubVisualStudio\LiveMedianEstimate\LiveMedianEstimate\obj\Release\LiveMedianEstimate.csprojResolveAssemblyReference.cache

@@ -72,10 +72,10 @@ namespace LiveMedianEstimate
 
                     int randomIndex = randomizer.Next(0, count);
 
-                    if(randomIndex < k)
+                    if (randomIndex < k)
                     {
                         sampleArray[randomIndex] = float.Parse(line);
-                    }   
+                    }
                 }
             }
 
@@ -206,27 +206,26 @@ namespace LiveMedianEstimate
                 writerDesc.Close();
 
                 // Randomize List and write to new file stream
-                listOfInboundStream.Reverse();
-                foreach (var variable in listOfInboundStream)
+                // Make a copy of the Stream List as an Array
+                // Shuffle to generate new randomized sequence of the input stream
+                float[] streamArray = new float[listOfInboundStream.Count];
+                listOfInboundStream.CopyTo(streamArray);
+                Shuffle(new Random(), streamArray);
+
+                foreach (var variable in streamArray)
                 {
                     writerRand.WriteLine(variable);
                 }
                 writerRand.Close();
 
-                // Report test results 5 times
-                for (int i = 0; i < 5; i++)
+                // Report test results 25000 times
+                for (int i = 0; i < 25000; i++)
                 {
                     // Declare StreamReader to read from recently populated files
                     stream = new StreamReader(path);
                     StreamReader streamAsc = new StreamReader(pathAsc);
                     StreamReader streamDesc = new StreamReader(pathDesc);
                     StreamReader streamRand = new StreamReader(pathRand);
-
-                    // Make a copy of the Stream List as an Array
-                    // Shuffle to generate new randomized sequence of the input stream
-                    float[] streamArray = new float[listOfInboundStream.Count];
-                    listOfInboundStream.CopyTo(streamArray);
-                    Shuffle(new Random(), streamArray);
 
                     Console.WriteLine("");
 
@@ -272,7 +271,7 @@ namespace LiveMedianEstimate
             for(int i=0; i<streamList.Count; i++)
             {
                 Console.Write("Probability of ");
-                Console.WriteLine(streamList[i] + " = " + GetElementCounter(i) + "/" + 20 + " = " + (float)GetElementCounter(i)/20.0f);
+                Console.WriteLine(streamList[i] + " = " + GetElementCounter(i) + "/" + 100000 + " = " + (float)GetElementCounter(i)/100000.0f);
             }
             Console.WriteLine("");
         }
