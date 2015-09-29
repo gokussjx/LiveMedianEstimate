@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace LiveMedianEstimate
 {
@@ -157,7 +158,7 @@ namespace LiveMedianEstimate
             var listOfInboundStream = new List<float>();
 
             // Define file paths to use
-            string path = Path.Combine(Environment.CurrentDirectory, "TestFile.txt"); ;
+            string path = Path.Combine(Environment.CurrentDirectory, "TestFile.txt");
             string pathAsc = Path.Combine(Environment.CurrentDirectory, "TestFileAsc.txt");
             string pathDesc = Path.Combine(Environment.CurrentDirectory, "TestFileDesc.txt");
             string pathRand = Path.Combine(Environment.CurrentDirectory, "TestFileRand.txt");
